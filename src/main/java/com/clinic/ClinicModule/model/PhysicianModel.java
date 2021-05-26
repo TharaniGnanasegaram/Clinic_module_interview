@@ -7,17 +7,22 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 @Entity
-@Table(name = "tbl_physician")
+@Table(name = "tbl_physician", uniqueConstraints = { @UniqueConstraint(columnNames = "mobile") })
 public class PhysicianModel {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Integer id;
 	private String name;
-	private String mobileNumber;
+	private String mobile;
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
 	private Date createdDatetime;
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
 	private Date modifiedDatetime;
 	private String createdBy;
 	private String modifiedBy;
@@ -38,12 +43,12 @@ public class PhysicianModel {
 		this.name = name;
 	}
 
-	public String getMobileNumber() {
-		return mobileNumber;
+	public String getMobile() {
+		return mobile;
 	}
 
-	public void setMobileNumber(String mobileNumber) {
-		this.mobileNumber = mobileNumber;
+	public void setMobile(String mobile) {
+		this.mobile = mobile;
 	}
 
 	public Date getCreatedDatetime() {
@@ -85,7 +90,7 @@ public class PhysicianModel {
 		result = prime * result + ((createdBy == null) ? 0 : createdBy.hashCode());
 		result = prime * result + ((createdDatetime == null) ? 0 : createdDatetime.hashCode());
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
-		result = prime * result + ((mobileNumber == null) ? 0 : mobileNumber.hashCode());
+		result = prime * result + ((mobile == null) ? 0 : mobile.hashCode());
 		result = prime * result + ((modifiedBy == null) ? 0 : modifiedBy.hashCode());
 		result = prime * result + ((modifiedDatetime == null) ? 0 : modifiedDatetime.hashCode());
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
@@ -116,10 +121,10 @@ public class PhysicianModel {
 				return false;
 		} else if (!id.equals(other.id))
 			return false;
-		if (mobileNumber == null) {
-			if (other.mobileNumber != null)
+		if (mobile == null) {
+			if (other.mobile != null)
 				return false;
-		} else if (!mobileNumber.equals(other.mobileNumber))
+		} else if (!mobile.equals(other.mobile))
 			return false;
 		if (modifiedBy == null) {
 			if (other.modifiedBy != null)
@@ -141,7 +146,7 @@ public class PhysicianModel {
 
 	@Override
 	public String toString() {
-		return "PhysicianModel [id=" + id + ", name=" + name + ", mobileNumber=" + mobileNumber + ", createdDatetime="
+		return "PhysicianModel [id=" + id + ", name=" + name + ", mobile=" + mobile + ", createdDatetime="
 				+ createdDatetime + ", modifiedDatetime=" + modifiedDatetime + ", createdBy=" + createdBy
 				+ ", modifiedBy=" + modifiedBy + "]";
 	}

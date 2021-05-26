@@ -8,6 +8,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 @Entity
 @Table(name = "tbl_billing")
 public class BillingModel {
@@ -17,6 +19,7 @@ public class BillingModel {
 	private Integer id;
 	private Integer physicianId;
 	private Integer patientId;
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
 	private Date billedDatetime;
 
 	public Integer getId() {

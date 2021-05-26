@@ -8,6 +8,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 @Entity
 @Table(name = "tbl_holiday")
 public class HolidayModel {
@@ -15,8 +17,12 @@ public class HolidayModel {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Integer id;
-	private Date holidayDate;
+	private String name;
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+	private Date holidaydate;
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
 	private Date createdDatetime;
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
 	private Date modifiedDatetime;
 	private String createdBy;
 	private String modifiedBy;
@@ -29,12 +35,19 @@ public class HolidayModel {
 		this.id = id;
 	}
 
-	public Date getHolidayDate() {
-		return holidayDate;
+	public String getName() {
+		return name;
 	}
 
-	public void setHolidayDate(Date holidayDate) {
-		this.holidayDate = holidayDate;
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public Date getHolidaydate() {
+		return holidaydate;
+	}
+
+	public void setHolidaydate(Date holidaydate) {
 	}
 
 	public Date getCreatedDatetime() {
@@ -75,10 +88,11 @@ public class HolidayModel {
 		int result = 1;
 		result = prime * result + ((createdBy == null) ? 0 : createdBy.hashCode());
 		result = prime * result + ((createdDatetime == null) ? 0 : createdDatetime.hashCode());
-		result = prime * result + ((holidayDate == null) ? 0 : holidayDate.hashCode());
+		result = prime * result + ((holidaydate == null) ? 0 : holidaydate.hashCode());
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		result = prime * result + ((modifiedBy == null) ? 0 : modifiedBy.hashCode());
 		result = prime * result + ((modifiedDatetime == null) ? 0 : modifiedDatetime.hashCode());
+		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		return result;
 	}
 
@@ -101,10 +115,10 @@ public class HolidayModel {
 				return false;
 		} else if (!createdDatetime.equals(other.createdDatetime))
 			return false;
-		if (holidayDate == null) {
-			if (other.holidayDate != null)
+		if (holidaydate == null) {
+			if (other.holidaydate != null)
 				return false;
-		} else if (!holidayDate.equals(other.holidayDate))
+		} else if (!holidaydate.equals(other.holidaydate))
 			return false;
 		if (id == null) {
 			if (other.id != null)
@@ -121,14 +135,19 @@ public class HolidayModel {
 				return false;
 		} else if (!modifiedDatetime.equals(other.modifiedDatetime))
 			return false;
+		if (name == null) {
+			if (other.name != null)
+				return false;
+		} else if (!name.equals(other.name))
+			return false;
 		return true;
 	}
 
 	@Override
 	public String toString() {
-		return "HolidayModel [id=" + id + ", holidayDate=" + holidayDate + ", createdDatetime=" + createdDatetime
-				+ ", modifiedDatetime=" + modifiedDatetime + ", createdBy=" + createdBy + ", modifiedBy=" + modifiedBy
-				+ "]";
+		return "HolidayModel [id=" + id + ", name=" + name + ", holidaydate=" + holidaydate + ", createdDatetime="
+				+ createdDatetime + ", modifiedDatetime=" + modifiedDatetime + ", createdBy=" + createdBy
+				+ ", modifiedBy=" + modifiedBy + "]";
 	}
 
 }

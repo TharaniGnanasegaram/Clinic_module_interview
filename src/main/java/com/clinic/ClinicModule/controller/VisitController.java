@@ -14,8 +14,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.clinic.ClinicModule.model.HolidayModel;
 import com.clinic.ClinicModule.model.VisitModel;
 import com.clinic.ClinicModule.repositories.VisitRepository;
+import com.clinic.ClinicModuleException.ClinicApiBadRequestException;
 import com.clinic.ClinicModuleException.ResourceNotFoundException;
 
 @RestController
@@ -24,6 +26,9 @@ public class VisitController {
 
 	@Autowired
 	private VisitRepository visitRepository;
+
+	@Autowired
+	private HolidayController holidayController;
 
 	@GetMapping
 	public List<VisitModel> findAllVisits() {
@@ -44,6 +49,10 @@ public class VisitController {
 	@PostMapping
 	public VisitModel saveVisit(@Validated @RequestBody VisitModel visit) {
 		Date currentDateTime = new java.sql.Timestamp(new Date().getTime());
+		List<HolidayModel> holiday = holidayController.search(visit.getVisitDatetime());
+		if (!holiday.isEmpty()) {
+			throw new ClinicApiBadRequestException("The provided visit date is a holiday. Please select another date.");
+		}
 		visit.setCreatedDatetime(currentDateTime);
 		visit.setModifiedDatetime(currentDateTime);
 		visit.setCreatedBy("");
@@ -62,6 +71,11 @@ public class VisitController {
 
 		updateVisit.setId(existingVisit.get().getId());
 		if (updateVisit.getVisitDatetime() != null) {
+			List<HolidayModel> holiday = holidayController.search(updateVisit.getVisitDatetime());
+			if (!holiday.isEmpty()) {
+				throw new ClinicApiBadRequestException(
+						"The provided visit date is a holiday. Please select another date.");
+			}
 			existingVisit.get().setVisitDatetime(updateVisit.getVisitDatetime());
 		}
 		if (updateVisit.getPatientId() != null) {

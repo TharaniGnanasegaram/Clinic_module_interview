@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.clinic.ClinicModule.model.PatientModel;
@@ -26,8 +27,13 @@ public class PatientController {
 	private PatientRepository patientRepository;
 
 	@GetMapping
-	public List<PatientModel> findAllPatients() {
-		return (List<PatientModel>) patientRepository.findAll();
+	public List<PatientModel> search(@RequestParam(value = "mobile", required = false) String mobile) {
+		if (mobile == null) {
+			return (List<PatientModel>) patientRepository.findAll();
+		} else {
+			return patientRepository.findByMobile(mobile);
+		}
+
 	}
 
 	@GetMapping("/{id}")
@@ -63,8 +69,8 @@ public class PatientController {
 		if (updatePatient.getName() != null) {
 			existingPatient.get().setName(updatePatient.getName());
 		}
-		if (updatePatient.getMobileNumber() != null) {
-			existingPatient.get().setMobileNumber(updatePatient.getMobileNumber());
+		if (updatePatient.getMobile() != null) {
+			existingPatient.get().setMobile(updatePatient.getMobile());
 		}
 		if (updatePatient.getAge() != null) {
 			existingPatient.get().setAge(updatePatient.getAge());

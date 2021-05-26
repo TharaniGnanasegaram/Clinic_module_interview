@@ -1,5 +1,6 @@
 package com.clinic.ClinicModule.controller;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -7,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.clinic.ClinicModule.model.HolidayModel;
@@ -21,8 +23,13 @@ public class HolidayController {
 	private HolidayRepository holidayRepository;
 
 	@GetMapping
-	public List<HolidayModel> findAllHolidays() {
-		return (List<HolidayModel>) holidayRepository.findAll();
+	public List<HolidayModel> search(@RequestParam(value = "holidaydate", required = false) Date holidaydate) {
+		if (holidaydate == null) {
+			return (List<HolidayModel>) holidayRepository.findAll();
+		} else {
+			return holidayRepository.findByHolidaydate(holidaydate);
+		}
+
 	}
 
 	@GetMapping("/{id}")
