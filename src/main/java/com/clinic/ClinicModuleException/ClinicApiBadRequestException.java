@@ -3,7 +3,7 @@ package com.clinic.ClinicModuleException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-@ResponseStatus(code = HttpStatus.NOT_FOUND)
+@ResponseStatus(code = HttpStatus.BAD_REQUEST)
 public final class ClinicApiBadRequestException extends RuntimeException {
 
 	private static final long serialVersionUID = -5605216926783790826L;

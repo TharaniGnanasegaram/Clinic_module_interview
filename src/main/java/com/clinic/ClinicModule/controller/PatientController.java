@@ -1,10 +1,10 @@
 package com.clinic.ClinicModule.controller;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,8 +15,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.clinic.ClinicModule.common.ClinicDateUtils;
+import com.clinic.ClinicModule.common.ClinicUserUtils;
 import com.clinic.ClinicModule.model.PatientModel;
 import com.clinic.ClinicModule.repositories.PatientRepository;
+import com.clinic.ClinicModuleException.ClinicApiBadRequestException;
 import com.clinic.ClinicModuleException.ResourceNotFoundException;
 
 @RestController
@@ -49,11 +52,15 @@ public class PatientController {
 
 	@PostMapping
 	public PatientModel savePatient(@Validated @RequestBody PatientModel patient) {
-		Date currentDateTime = new java.sql.Timestamp(new Date().getTime());
-		patient.setCreatedDatetime(currentDateTime);
-		patient.setModifiedDatetime(currentDateTime);
-		patient.setCreatedBy("");
-		return patientRepository.save(patient);
+		patient.setCreatedDatetime(ClinicDateUtils.getCurrentTimeStamp());
+		patient.setModifiedDatetime(ClinicDateUtils.getCurrentTimeStamp());
+		patient.setCreatedBy(ClinicUserUtils.getCurrentUser());
+
+		try {
+			return patientRepository.save(patient);
+		} catch (DataIntegrityViolationException e) {
+			throw new ClinicApiBadRequestException("Patient already exists.");
+		}
 	}
 
 	@PutMapping("/{id}")
@@ -79,9 +86,12 @@ public class PatientController {
 			existingPatient.get().setGender(updatePatient.getGender());
 		}
 
-		Date currentDateTime = new java.sql.Timestamp(new Date().getTime());
-		existingPatient.get().setModifiedDatetime(currentDateTime);
+		existingPatient.get().setModifiedDatetime(ClinicDateUtils.getCurrentTimeStamp());
 
-		return patientRepository.save(existingPatient.get());
+		try {
+			return patientRepository.save(existingPatient.get());
+		} catch (DataIntegrityViolationException e) {
+			throw new ClinicApiBadRequestException("Patient already exists. Please check the mobile number.");
+		}
 	}
 }

@@ -1,6 +1,5 @@
 package com.clinic.ClinicModule.controller;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.clinic.ClinicModule.common.ClinicDateUtils;
+import com.clinic.ClinicModule.common.ClinicUserUtils;
 import com.clinic.ClinicModule.model.PhysicianModel;
 import com.clinic.ClinicModule.repositories.PhysicianRepository;
 import com.clinic.ClinicModuleException.ClinicApiBadRequestException;
@@ -51,11 +52,10 @@ public class PhysicianController {
 
 	@PostMapping
 	public PhysicianModel savePhysician(@Validated @RequestBody PhysicianModel physician) {
-		Date currentDateTime = new java.sql.Timestamp(new Date().getTime());
-		physician.setCreatedDatetime(currentDateTime);
-		physician.setModifiedDatetime(currentDateTime);
-		physician.setCreatedBy("");
-		physician.setModifiedBy("");
+		physician.setCreatedDatetime(ClinicDateUtils.getCurrentTimeStamp());
+		physician.setModifiedDatetime(ClinicDateUtils.getCurrentTimeStamp());
+		physician.setCreatedBy(ClinicUserUtils.getCurrentUser());
+		physician.setModifiedBy(ClinicUserUtils.getCurrentUser());
 		try {
 			return physicianRepository.save(physician);
 		} catch (DataIntegrityViolationException e) {
@@ -81,9 +81,8 @@ public class PhysicianController {
 			existingPhysician.get().setMobile(updatePhysician.getMobile());
 		}
 
-		Date currentDateTime = new java.sql.Timestamp(new Date().getTime());
-		existingPhysician.get().setModifiedDatetime(currentDateTime);
-		existingPhysician.get().setModifiedBy("");
+		existingPhysician.get().setModifiedDatetime(ClinicDateUtils.getCurrentTimeStamp());
+		existingPhysician.get().setModifiedBy(ClinicUserUtils.getCurrentUser());
 
 		try {
 			return physicianRepository.save(existingPhysician.get());

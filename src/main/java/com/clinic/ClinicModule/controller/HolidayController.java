@@ -1,6 +1,6 @@
 package com.clinic.ClinicModule.controller;
 
-import java.util.Date;
+import java.sql.Date;
 import java.util.List;
 import java.util.Optional;
 

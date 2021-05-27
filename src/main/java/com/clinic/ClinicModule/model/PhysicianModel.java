@@ -20,9 +20,9 @@ public class PhysicianModel {
 	private Integer id;
 	private String name;
 	private String mobile;
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	private Date createdDatetime;
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	private Date modifiedDatetime;
 	private String createdBy;
 	private String modifiedBy;

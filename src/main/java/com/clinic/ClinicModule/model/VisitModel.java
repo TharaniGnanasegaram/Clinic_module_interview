@@ -17,14 +17,14 @@ public class VisitModel {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Integer id;
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
-	private Date visitDatetime;
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+	private Date visitdatetime;
 	private Integer physicianId;
 	private Integer patientId;
 	private String reason;
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	private Date createdDatetime;
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	private Date modifiedDatetime;
 	private String createdBy;
 	private String modifiedBy;
@@ -37,12 +37,12 @@ public class VisitModel {
 		this.id = id;
 	}
 
-	public Date getVisitDatetime() {
-		return visitDatetime;
+	public Date getVisitdatetime() {
+		return visitdatetime;
 	}
 
-	public void setVisitDatetime(Date visitDatetime) {
-		this.visitDatetime = visitDatetime;
+	public void setVisitdatetime(Date visitdatetime) {
+		this.visitdatetime = visitdatetime;
 	}
 
 	public Integer getPhysicianId() {
@@ -113,7 +113,7 @@ public class VisitModel {
 		result = prime * result + ((patientId == null) ? 0 : patientId.hashCode());
 		result = prime * result + ((physicianId == null) ? 0 : physicianId.hashCode());
 		result = prime * result + ((reason == null) ? 0 : reason.hashCode());
-		result = prime * result + ((visitDatetime == null) ? 0 : visitDatetime.hashCode());
+		result = prime * result + ((visitdatetime == null) ? 0 : visitdatetime.hashCode());
 		return result;
 	}
 
@@ -166,17 +166,17 @@ public class VisitModel {
 				return false;
 		} else if (!reason.equals(other.reason))
 			return false;
-		if (visitDatetime == null) {
-			if (other.visitDatetime != null)
+		if (visitdatetime == null) {
+			if (other.visitdatetime != null)
 				return false;
-		} else if (!visitDatetime.equals(other.visitDatetime))
+		} else if (!visitdatetime.equals(other.visitdatetime))
 			return false;
 		return true;
 	}
 
 	@Override
 	public String toString() {
-		return "VisitModel [id=" + id + ", visitDatetime=" + visitDatetime + ", physicianId=" + physicianId
+		return "VisitModel [id=" + id + ", visitdatetime=" + visitdatetime + ", physicianId=" + physicianId
 				+ ", patientId=" + patientId + ", reason=" + reason + ", createdDatetime=" + createdDatetime
 				+ ", modifiedDatetime=" + modifiedDatetime + ", createdBy=" + createdBy + ", modifiedBy=" + modifiedBy
 				+ "]";

@@ -1,10 +1,10 @@
 package com.clinic.ClinicModule.controller;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,8 +14,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.clinic.ClinicModule.common.ClinicDateUtils;
 import com.clinic.ClinicModule.model.BillingModel;
 import com.clinic.ClinicModule.repositories.BillingRepository;
+import com.clinic.ClinicModuleException.ClinicApiBadRequestException;
 import com.clinic.ClinicModuleException.ResourceNotFoundException;
 
 @RestController
@@ -43,9 +45,12 @@ public class BillingController {
 
 	@PostMapping
 	public BillingModel saveBill(@Validated @RequestBody BillingModel billing) {
-		Date currentDateTime = new java.sql.Timestamp(new Date().getTime());
-		billing.setBilledDatetime(currentDateTime);
-		return billingRepository.save(billing);
+		billing.setBilledDatetime(ClinicDateUtils.getCurrentTimeStamp());
+		try {
+			return billingRepository.save(billing);
+		} catch (DataIntegrityViolationException e) {
+			throw new ClinicApiBadRequestException("Billing already done.");
+		}
 	}
 
 	@PutMapping("/{id}")

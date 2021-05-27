@@ -1,10 +1,11 @@
 package com.clinic.ClinicModule.controller;
 
-import java.util.Date;
+import java.sql.Date;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,8 +13,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.clinic.ClinicModule.common.ClinicDateUtils;
+import com.clinic.ClinicModule.common.ClinicUserUtils;
 import com.clinic.ClinicModule.model.HolidayModel;
 import com.clinic.ClinicModule.model.VisitModel;
 import com.clinic.ClinicModule.repositories.VisitRepository;
@@ -31,8 +35,13 @@ public class VisitController {
 	private HolidayController holidayController;
 
 	@GetMapping
-	public List<VisitModel> findAllVisits() {
-		return (List<VisitModel>) visitRepository.findAll();
+	public List<VisitModel> search(@RequestParam(value = "visitdatetime", required = false) Date visitdatetime) {
+		if (visitdatetime == null) {
+			return (List<VisitModel>) visitRepository.findAll();
+		} else {
+			return visitRepository.findByVisitdatetime(visitdatetime);
+		}
+
 	}
 
 	@GetMapping("/{id}")
@@ -48,16 +57,25 @@ public class VisitController {
 
 	@PostMapping
 	public VisitModel saveVisit(@Validated @RequestBody VisitModel visit) {
-		Date currentDateTime = new java.sql.Timestamp(new Date().getTime());
-		List<HolidayModel> holiday = holidayController.search(visit.getVisitDatetime());
+
+		Date visitDay = new Date(visit.getVisitdatetime().getTime());
+		List<HolidayModel> holiday = holidayController.search(visitDay);
 		if (!holiday.isEmpty()) {
 			throw new ClinicApiBadRequestException("The provided visit date is a holiday. Please select another date.");
 		}
-		visit.setCreatedDatetime(currentDateTime);
-		visit.setModifiedDatetime(currentDateTime);
-		visit.setCreatedBy("");
-		visit.setModifiedBy("");
-		return visitRepository.save(visit);
+
+		visit.setVisitdatetime(new java.sql.Timestamp(visit.getVisitdatetime().getTime()));
+		visit.setCreatedDatetime(ClinicDateUtils.getCurrentTimeStamp());
+		visit.setModifiedDatetime(ClinicDateUtils.getCurrentTimeStamp());
+		visit.setCreatedBy(ClinicUserUtils.getCurrentUser());
+		visit.setModifiedBy(ClinicUserUtils.getCurrentUser());
+
+		try {
+			return visitRepository.save(visit);
+		} catch (DataIntegrityViolationException e) {
+			throw new ClinicApiBadRequestException("Error!. Please check whether the patient or the physician exists.");
+		}
+
 	}
 
 	@PutMapping("/{id}")
@@ -70,13 +88,14 @@ public class VisitController {
 		}
 
 		updateVisit.setId(existingVisit.get().getId());
-		if (updateVisit.getVisitDatetime() != null) {
-			List<HolidayModel> holiday = holidayController.search(updateVisit.getVisitDatetime());
+		if (updateVisit.getVisitdatetime() != null) {
+			Date visitDay = new Date(updateVisit.getVisitdatetime().getTime());
+			List<HolidayModel> holiday = holidayController.search(visitDay);
 			if (!holiday.isEmpty()) {
 				throw new ClinicApiBadRequestException(
 						"The provided visit date is a holiday. Please select another date.");
 			}
-			existingVisit.get().setVisitDatetime(updateVisit.getVisitDatetime());
+			existingVisit.get().setVisitdatetime(updateVisit.getVisitdatetime());
 		}
 		if (updateVisit.getPatientId() != null) {
 			existingVisit.get().setPatientId(updateVisit.getPatientId());
@@ -88,10 +107,14 @@ public class VisitController {
 			existingVisit.get().setReason(updateVisit.getReason());
 		}
 
-		Date currentDateTime = new java.sql.Timestamp(new Date().getTime());
-		existingVisit.get().setModifiedDatetime(currentDateTime);
-		existingVisit.get().setModifiedBy("");
+		existingVisit.get().setModifiedDatetime(ClinicDateUtils.getCurrentTimeStamp());
+		existingVisit.get().setModifiedBy(ClinicUserUtils.getCurrentUser());
 
-		return visitRepository.save(existingVisit.get());
+		try {
+			return visitRepository.save(existingVisit.get());
+		} catch (DataIntegrityViolationException e) {
+			throw new ClinicApiBadRequestException("Error!. Please check whether the patient or the physician exists.");
+		}
 	}
+
 }
