@@ -84,7 +84,7 @@ public class VisitController {
 		Optional<VisitModel> existingVisit = visitRepository.findById(id);
 
 		if (!existingVisit.isPresent() && (updateVisit.getId() != null && updateVisit.getId() != id)) {
-			return null;
+			throw new ClinicApiBadRequestException("Error!. Provided Id not exists.");
 		}
 
 		updateVisit.setId(existingVisit.get().getId());

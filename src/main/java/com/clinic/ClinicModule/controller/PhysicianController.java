@@ -70,7 +70,7 @@ public class PhysicianController {
 		Optional<PhysicianModel> existingPhysician = physicianRepository.findById(id);
 
 		if (!existingPhysician.isPresent() && (updatePhysician.getId() != null && updatePhysician.getId() != id)) {
-			return null;
+			throw new ClinicApiBadRequestException("Error!. Provided Id not exists.");
 		}
 
 		updatePhysician.setId(existingPhysician.get().getId());

@@ -21,6 +21,7 @@ public class BillingModel {
 	private Integer patientId;
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	private Date billedDatetime;
+	private Double billAmount;
 
 	public Integer getId() {
 		return id;
@@ -54,10 +55,19 @@ public class BillingModel {
 		this.billedDatetime = billedDatetime;
 	}
 
+	public Double getBillAmount() {
+		return billAmount;
+	}
+
+	public void setBillAmount(Double billAmount) {
+		this.billAmount = billAmount;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
+		result = prime * result + ((billAmount == null) ? 0 : billAmount.hashCode());
 		result = prime * result + ((billedDatetime == null) ? 0 : billedDatetime.hashCode());
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		result = prime * result + ((patientId == null) ? 0 : patientId.hashCode());
@@ -74,6 +84,11 @@ public class BillingModel {
 		if (getClass() != obj.getClass())
 			return false;
 		BillingModel other = (BillingModel) obj;
+		if (billAmount == null) {
+			if (other.billAmount != null)
+				return false;
+		} else if (!billAmount.equals(other.billAmount))
+			return false;
 		if (billedDatetime == null) {
 			if (other.billedDatetime != null)
 				return false;
@@ -100,7 +115,7 @@ public class BillingModel {
 	@Override
 	public String toString() {
 		return "BillingModel [id=" + id + ", physicianId=" + physicianId + ", patientId=" + patientId
-				+ ", billedDatetime=" + billedDatetime + "]";
+				+ ", billedDatetime=" + billedDatetime + ", billAmount=" + billAmount + "]";
 	}
 
 }

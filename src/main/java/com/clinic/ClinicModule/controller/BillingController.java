@@ -49,7 +49,7 @@ public class BillingController {
 		try {
 			return billingRepository.save(billing);
 		} catch (DataIntegrityViolationException e) {
-			throw new ClinicApiBadRequestException("Billing already done.");
+			throw new ClinicApiBadRequestException("Please check whether the provided physician or patient exist.");
 		}
 	}
 
@@ -59,7 +59,7 @@ public class BillingController {
 		Optional<BillingModel> existingBilling = billingRepository.findById(id);
 
 		if (!existingBilling.isPresent() && (updateBilling.getId() != null && updateBilling.getId() != id)) {
-			return null;
+			throw new ClinicApiBadRequestException("Error!. Provided Id not exists.");
 		}
 
 		updateBilling.setId(existingBilling.get().getId());
@@ -69,7 +69,14 @@ public class BillingController {
 		if (updateBilling.getPhysicianId() != null) {
 			existingBilling.get().setPhysicianId(updateBilling.getPhysicianId());
 		}
+		if (updateBilling.getBillAmount() != 0) {
+			existingBilling.get().setBillAmount(updateBilling.getBillAmount());
+		}
 
-		return billingRepository.save(existingBilling.get());
+		try {
+			return billingRepository.save(existingBilling.get());
+		} catch (DataIntegrityViolationException e) {
+			throw new ClinicApiBadRequestException("Please check whether the provided physician or patient exist.");
+		}
 	}
 }
