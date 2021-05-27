@@ -20,8 +20,8 @@ public class BillingModel {
 	private Integer physicianId;
 	private Integer patientId;
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-	private Date billedDatetime;
 	private Double billAmount;
+	private Date billedDatetime;
 
 	public Integer getId() {
 		return id;
@@ -47,20 +47,20 @@ public class BillingModel {
 		this.patientId = patientId;
 	}
 
-	public Date getBilledDatetime() {
-		return billedDatetime;
-	}
-
-	public void setBilledDatetime(Date billedDatetime) {
-		this.billedDatetime = billedDatetime;
-	}
-
 	public Double getBillAmount() {
 		return billAmount;
 	}
 
 	public void setBillAmount(Double billAmount) {
 		this.billAmount = billAmount;
+	}
+
+	public Date getBilledDatetime() {
+		return billedDatetime;
+	}
+
+	public void setBilledDatetime(Date billedDatetime) {
+		this.billedDatetime = billedDatetime;
 	}
 
 	@Override
@@ -114,8 +114,8 @@ public class BillingModel {
 
 	@Override
 	public String toString() {
-		return "BillingModel [id=" + id + ", physicianId=" + physicianId + ", patientId=" + patientId
-				+ ", billedDatetime=" + billedDatetime + ", billAmount=" + billAmount + "]";
+		return "BillingModel [id=" + id + ", physicianId=" + physicianId + ", patientId=" + patientId + ", billAmount="
+				+ billAmount + ", billedDatetime=" + billedDatetime + "]";
 	}
 
 }

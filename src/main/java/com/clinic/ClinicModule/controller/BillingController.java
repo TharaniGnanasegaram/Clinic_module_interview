@@ -66,11 +66,11 @@ public class BillingController {
 		if (updateBilling.getPatientId() != null) {
 			existingBilling.get().setPatientId(updateBilling.getPatientId());
 		}
-		if (updateBilling.getPhysicianId() != null) {
-			existingBilling.get().setPhysicianId(updateBilling.getPhysicianId());
-		}
 		if (updateBilling.getBillAmount() != 0) {
 			existingBilling.get().setBillAmount(updateBilling.getBillAmount());
+		}
+		if (updateBilling.getPhysicianId() != null) {
+			existingBilling.get().setPhysicianId(updateBilling.getPhysicianId());
 		}
 
 		try {
